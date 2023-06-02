@@ -44,7 +44,7 @@ Tree.prototype.walk = function() {
  * Node
  */
 
-class SyntaxNode {
+class _SyntaxNode {
   constructor(tree) {
     this.tree = tree;
   }
@@ -632,7 +632,7 @@ function unmarshalNode(value, tree, offset = 0, cache = null) {
   /* case 2: node being transferred */
   const nodeTypeId = value;
   const NodeClass = nodeTypeId === ERROR_TYPE_ID
-    ? SyntaxNode
+    ? _SyntaxNode
     : tree.language.nodeSubclasses[nodeTypeId];
 
   const {nodeTransferArray} = binding;
@@ -697,7 +697,7 @@ function initializeLanguageNodeClasses(language) {
 
   const nodeSubclasses = [];
   for (let id = 0, n = nodeTypeNamesById.length; id < n; id++) {
-    nodeSubclasses[id] = SyntaxNode;
+    nodeSubclasses[id] = _SyntaxNode;
 
     const typeName = nodeTypeNamesById[id];
     if (!typeName) continue;
@@ -734,7 +734,7 @@ function initializeLanguageNodeClasses(language) {
     }
 
     const className = camelCase(typeName, true) + 'Node';
-    const nodeSubclass = eval(`class ${className} extends SyntaxNode {${classBody}}; ${className}`);
+    const nodeSubclass = eval(`class ${className} extends _SyntaxNode {${classBody}}; ${className}`);
     nodeSubclass.prototype.type = typeName;
     nodeSubclass.prototype.fields = Object.freeze(fieldNames.sort())
     nodeSubclasses[id] = nodeSubclass;
@@ -752,5 +752,5 @@ function camelCase(name, upperCase) {
 module.exports = Parser;
 module.exports.Query = Query;
 module.exports.Tree = Tree;
-module.exports.SyntaxNode = SyntaxNode;
+module.exports.SyntaxNode = _SyntaxNode;
 module.exports.TreeCursor = TreeCursor;
